@@ -259,3 +259,143 @@ class Student : Person() {
 2.  runBlocking——创建一个协层作用域，但是会阻塞当前线程，会影响性能
 3.  launch——在当前作用域下创建一个子作用域
 4.  coroutineScope——可以在任何挂起函数中调用，并继承当前作用域并创建子作用域，与runBlocking类似，但仅会阻塞当前协程
+
+
+
+## 2、Flow
+
+
+
+ ### 1)、Flow的介绍
+
+​	Flow 是 google 官方提供的一套基于 kotlin 协程的响应式编程模型，它与 RxJava 的使用类似，但相比之下 Flow 使用起来更简单，另外 Flow 作用在协程内，可以与协程的生命周期绑定，当协程取消时， Flow 也会被取消，避免了内存泄漏风险。
+
+
+
+ ### 2)、Flow的使用
+
+1. Flow的创建
+
+   > 当Flow创建后会提供协程上下文给Lambda表达式，因此可以在Lambda中调用挂起函数
+
+   ```kotlin
+   //直接通过flow()函数来创建一个flow
+   val flow = flow {
+   	emit(1)
+   }
+   
+   //通过flowOf()函数来创建一个flow
+   //会直接将内部元素发射出去
+   val flow = flowOf(1,2,3,4)
+   
+   //通过asFlow()函数来创建一个flow
+   val flow = listOf(1,2,3,4)
+   	.asFlow()
+   ```
+
+   
+
+
+
+  2. Flow的调用
+
+     > Flow是冷流，即 不进行观察则不会运行
+
+     ```kotlin
+     /**
+      * 使用上面创建的flow来调用
+      */
+     //使用collect()方法来注册观察flow
+     //需要注意的collect()也是挂起函数，必须要在协程或者挂起函数中调用
+     flow.collect {
+       println(it.toString)
+     }
+     
+     //使用collectLatest()函数来观察flow
+     //这个函数用来处理Flow的背压问题，当新数据来的时候会将collectLatest中正在执行的  代码全部停掉，直接执行新的数据
+     flow.collectLatest {
+       println(it.toString)
+     }
+     ```
+
+     
+
+
+
+3. Flow的常用操作符
+   - map 转换操作符
+   
+     ```kotlin
+     fun main() {
+         runBlocking {
+             val flow = flowOf(1, 2, 3, 4, 5)
+             flow.map {
+               	//将每个元素转换后再输出
+                 it * it
+             }.collect {
+                 println(it)
+             }
+         }
+     }
+     ```
+   
+   - filter 过滤操作符
+   
+     ```kotlin
+     fun main() {
+         runBlocking {
+             val flow = flowOf(1, 2, 3, 4, 5)
+             flow.filter { 
+               	//只有偶数能通过，奇数无法通过，用来过滤偶数
+                 it % 2 == 0
+             }.map {
+               	//转换成对应的平方
+                 it * it
+             }.collect {
+                 println(it)
+             }
+         }
+     }
+     ```
+   
+   - onEach 遍历操作符
+   
+     ```kotlin
+     fun main() {
+         runBlocking {
+             val flow = flowOf(1, 2, 3, 4, 5)
+             flow.onEach {
+               	//把flow中的每一条数据打印出来
+                 println(it)
+             }.collect {
+             }
+         }
+     }
+     ```
+   
+   - debounce 间隔操作符
+   
+     ```kotlin
+     fun main() {
+         runBlocking {
+             flow {
+                 emit(1)
+                 emit(2)
+                 delay(600)
+                 emit(3)
+                 delay(100)
+                 emit(4)
+                 delay(100)
+                 emit(5)
+             }
+           	//只有两条消息之间的间隔大于500毫秒才能发射出来	
+             .debounce(500)
+             .collect {
+                 println(it)
+             }
+         }
+     }
+     ```
+   
+     <img src="img/a0a2cb63591f108ec67842a35999c9b3.jpg" alt="打印结果" style="zoom:200%;" />
+
