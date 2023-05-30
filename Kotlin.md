@@ -474,6 +474,4 @@ class Student : Person() {
              }
      ```
    
-     ![image-20230530211658607](./img/image-20230530211658607.png)
-
-​				由此可见flatMapMerge是谁先执行完先发送，不保证顺序
+     ![image-20230530211658607](./img/image-20230530211658607.png)由此可见flatMapMerge是谁先执行完先发送，不保证顺序
