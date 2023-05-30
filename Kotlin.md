@@ -398,4 +398,82 @@ class Student : Person() {
      ```
    
      <img src="img/a0a2cb63591f108ec67842a35999c9b3.jpg" alt="打印结果" style="zoom:200%;" />
+     
+   - sample操作符:数据流当中按照一定的时间间隔来采样某一条数据
+   
+     ```kotlin
+     flow {
+     	while (true) {
+     		emit("发送一条弹幕")
+     	}
+     }
+     .sample(1000)
+     .flowOn(Dispatchers.IO)
+     .collect {
+     	println(it)
+     }
+     ```
+   
+     ![图片](img/640.gif)
+   
+   - reduce终端操作符，不需要通过collect函数来收集结果
+   
+     ```kotlin
+     val result = flow {
+         for (i in (1..100)) {
+             emit(i)
+         }
+     }.reduce { acc, value -> acc + value}
+     println(result)
+     ```
+   
+     用来计算累加
+   
+     
+   
+   - fold，与reduce操作符基本一致，多一个默认开头
+   
+     ```kotlin
+     val result = flow {
+         for (i in ('A'..'Z')) {
+             emit(i)
+         }
+     }.fold("Alphabet: ") { acc, value -> acc + value}
+     println(result)
+     ```
+   
+   
+   
+   - flatMapConcat：和RxJavad flatMap类似，需要在lambda表达式返回一个Flow，可以实现嵌套操作
+   
+     ```kotlin
+     flowOf(1, 2, 3)
+             .flatMapConcat {
+                 flowOf("a$it", "b$it")
+             }
+             .collect {
+                 println(it)
+             }
+     ```
+   
+     ![image-20230530211017077](./img/image-20230530211017077.png)
+   
+   - flatMapMerge：与flatMapConcat类似，区别在于，不能保证顺序
+   
+     ```kotlin
+     flowOf(200, 100, 300)
+             .flatMapMerge {
+                 flow{
+                     delay(it.toLong())
+                     emit("a$it")
+                     emit("b$it")
+                 }
+             }
+             .collect {
+                 println(it)
+             }
+     ```
+   
+     ![image-20230530211658607](./img/image-20230530211658607.png)
 
+​				由此可见flatMapMerge是谁先执行完先发送，不保证顺序
