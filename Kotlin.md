@@ -22,6 +22,7 @@
     -   [2、泛型的协变](#2泛型的协变)
 -   [七、协程](#七协程)
     -   [1、协程创建——作用域构建器](#1协程创建——作用域构建器)
+    -   [2、Flow](#2Flow)
 
 # 一、for循环
 
@@ -264,8 +265,6 @@ class Student : Person() {
 
 ## 2、Flow
 
-
-
  ### 1)、Flow的介绍
 
 ​	Flow 是 google 官方提供的一套基于 kotlin 协程的响应式编程模型，它与 RxJava 的使用类似，但相比之下 Flow 使用起来更简单，另外 Flow 作用在协程内，可以与协程的生命周期绑定，当协程取消时， Flow 也会被取消，避免了内存泄漏风险。
@@ -475,3 +474,87 @@ class Student : Person() {
      ```
    
      ![image-20230530211658607](./img/image-20230530211658607.png)由此可见flatMapMerge是谁先执行完先发送，不保证顺序
+   
+     
+   
+   - flatMapLatest:和上面类似，但是只会接受最新的数据，当新数据到的时候，会将原来的直接取消掉
+   
+     ```kotlin
+     flow {
+         emit(1)
+         delay(150)
+         emit(2)
+         delay(50)
+         emit(3)
+     }.flatMapLatest {
+         flow {
+             delay(100)
+             emit(it)
+         }
+     }.collect{
+         println(it)
+     }
+     ```
+   
+     ![image-20230531205955741](./img/image-20230531205955741.png)
+   
+     因为2发送50毫秒后就发送了3，此时，flatMapLatest中的任务还没有执行完，所以直接被取消了
+   
+     
+   
+   - zip操作符：将多个Flow并行处理，注意的是，每个Flow发射的数据量要相同，多的则不会处理
+   
+     ```kotlin
+     val start = System.currentTimeMillis()
+     val flow1 = flow {
+         delay(3000)
+         emit("a")
+     }
+     val flow2 = flow {
+         delay(2000)
+         emit(1)
+     }
+     flow1.zip(flow2) { a, b ->
+         a + b
+     }.collect {
+         val end = System.currentTimeMillis()
+         println("Time cost: ${end - start}ms")
+     }
+     ```
+   
+     ![image-20230531214929939](./img/image-20230531214929939.png)
+   
+     
+   
+   - buffer操作符：可以将collect函数和flow函数运行在不同的协程中。正常情况下，collect函数和flow函数会运行在同一个协程当中，因此collect函数中的代码没有执行完，flow函数中的代码也会被挂起等待。所以会出现以下情况：
+   
+     ![image-20230531221259191](./img/image-20230531221259191.png)
+   
+     发送没有时间间隔，但是却要等1000mm左右。
+   
+     当我们使用buffer操作符：collect函数将不会影响flow函数的调用
+   
+     ![image-20230531221532696](./img/image-20230531221532696.png)
+   
+     实际上，buffer只是提供了一个缓存策略，flow只管发送数据，当数据超过collect的处理速度时，就会被存入缓存中，collect再从缓存区获取数据。但是当，流速差异过大，缓存区不够用时，buffer就不是很管用了，就需要丢弃一些数据。
+   
+     
+   
+   - conflate操作符：与collectLatest()非常像，都是当新数据到来时丢弃原来的数据，区别在与，collectLatest()函数会将过时数据的处理也一并取消掉，而conflate() 会让正在执行的操作执行完，然后直接去取新的数据做新的操作
+   
+     ![image-20230601183849199](./img/image-20230601183849199.png)
+   
+     ![image-20230601183947155](./img/image-20230601183947155.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
