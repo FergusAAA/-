@@ -548,6 +548,61 @@ class Student : Person() {
 
 
 
+### 3)、StateFlow和SharedFlow
+
+> 在说StateFlow和SharedFlow之前，我要说一下冷和热的概念。
+>
+> 在RxJava中就有冷热的区别，Flow作为RxJava的继任者，自然不会丢了这个
+
+1. 冷流：只有被观察时才会运行，可以看成一个方法，每次调用都会返回结果。普通的Flow就是冷流
+
+   ```kotlin
+       val flow = flow {
+           emit(1)
+           emit(2)
+           emit(3)
+       }
+       runBlocking {
+           launch {
+               flow.collect {
+                   println(it)
+               }
+           }
+           delay(500)
+           println("do something")
+           delay(500)
+           launch {
+               flow.collect {
+                   println(it)
+               }
+           }
+       }
+   ```
+
+   ![image-20230606105032216](./img/image-20230606105032216.png)
+
+2. 热流：创建后就会开始工作，类似LiveData
+
+   ```kotlin
+   val flow = MutableStateFlow (1)
+   runBlocking {
+       launch {
+           flow.collect {
+               println(it)
+           }
+       }
+       delay(500)
+       println("do something")
+       flow.value = 2
+       delay(500)
+       flow.value = 3
+   }
+   ```
+
+   ![image-20230606110431924](./img/image-20230606110431924.png)
+
+​	
+
 
 
 
