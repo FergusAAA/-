@@ -23,6 +23,10 @@
 -   [七、协程](#七协程)
     -   [1、协程创建——作用域构建器](#1协程创建——作用域构建器)
     -   [2、Flow](#2Flow)
+       -   [(1)、Flow的介绍](#1Flow的介绍)
+       -   [(2)、Flow的使用](#2Flow的使用)
+       -   [(3)、StateFlow和SharedFlow](#3StateFlow和SharedFlow)
+
 
 # 一、for循环
 
@@ -602,6 +606,63 @@ class Student : Person() {
    ![image-20230606110431924](./img/image-20230606110431924.png)
 
 ​	
+
+3. StateFlow：和LiveData很相似，完全可以用来替代LiveData，且功能更强大。如果需要在协程中使用数据或对数据进行流处理，推荐使用StateFlow；如果功能非常简单，推荐使用LiveData。
+
+   ```Kotlin
+   //StateFlow初始化时需要设置默认值
+   val stateFlow =	 MutableStateFlow(1)
+   
+   //设置新数据时，直接用value赋值
+   stateFlow.value = 2
+   
+   //StateFlow观察时会直接拿到最新的值,需要注意是否要过滤默认值
+   stateFlow.collect {
+     	println(it)
+   }
+   ```
+
+   用下面的例子看一下：
+
+   ```kotlin
+   val mutableStateFlow = MutableStateFlow(1)
+   GlobalScope.launch {
+       mutableStateFlow.collect {
+           println(it)
+       }
+   }
+   delay(500)
+   mutableStateFlow.value = 2
+   delay(500)
+   mutableStateFlow.value = 3
+   delay(500)
+   ```
+
+   ![image-20230607120117031](./img/image-20230607120117031.png)
+   
+   
+   
+   如果想要将一个普通的Flow转换成StateFlow，可以使用stateIn()函数：
+   
+   ```kotlin
+   //stateIn()有两个重载函数，第一个只需要传入一个协程作用域
+   //第二个，需要作用域，超时时长，转变成StateFlow后的默认值，这里不过多介绍，有兴趣可以自行查阅
+   GlobalScope.launch {
+           flowOf.stateIn(this, SharingStarted.WhileSubscribed(1000), 0).collect {
+               println(it)
+           }
+       }
+   ```
+
+
+
+
+
+
+
+
+
+
 
 
 
