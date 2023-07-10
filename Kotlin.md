@@ -554,11 +554,11 @@ class Student : Person() {
 
 ### 3)、StateFlow和SharedFlow
 
-> 在说StateFlow和SharedFlow之前，我要说一下冷和热的概念。
+> 在说`StateFlow`和`SharedFlow`之前，我要说一下冷和热的概念。
 >
-> 在RxJava中就有冷热的区别，Flow作为RxJava的继任者，自然不会丢了这个
+> 在`RxJava`中就有`冷热`的区别，`Flow`作为`RxJava`的继任者，自然不会丢了这个
 
-1. 冷流：只有被观察时才会运行，可以看成一个方法，每次调用都会返回结果。普通的Flow就是冷流
+1. 冷流：只有被观察时才会运行，可以看成一个方法，每次调用都会返回结果。`普通的Flow`就是`冷流`
 
    ```kotlin
        val flow = flow {
@@ -607,7 +607,7 @@ class Student : Person() {
 
 ​	
 
-3. StateFlow：和LiveData很相似，完全可以用来替代LiveData，且功能更强大。如果需要在协程中使用数据或对数据进行流处理，推荐使用StateFlow；如果功能非常简单，推荐使用LiveData。
+3. StateFlow：和`LiveData`很相似，完全可以用来替代`LiveData`，且功能更强大。==如果需要在协程中使用数据或对数据进行流处理，推荐使用StateFlow；如果功能非常简单，推荐使用LiveData。==
 
    ```Kotlin
    //StateFlow初始化时需要设置默认值
@@ -642,7 +642,7 @@ class Student : Person() {
    
    
    
-   如果想要将一个普通的Flow转换成StateFlow，可以使用stateIn()函数：
+   如果想要将一个普通的`Flow`转换成`StateFlow`，可以使用`stateIn()`函数：
    
    ```kotlin
    //stateIn()有两个重载函数，第一个只需要传入一个协程作用域
@@ -653,8 +653,95 @@ class Student : Person() {
            }
        }
    ```
+   
+    
+   
+   ``StateFlow``对比``LiveData``:
+   
+   - 相同点：
+     - 都允许多个消费者
+     - 都有只读与可变类型
+     - 永远只保存一个状态值
+   - 与``LiveData``不同的是:
+     - **强制要求**初始默认值
+     - 支持CAS模式赋值
+     - 默认支持**防抖过滤**
+     - value的空安全校验
+     - `Flow`丰富的异步数据流操作
+     - 默认没有`Lifecycle`支持，`flow`的`collect`是挂起函数，会一直等待数据流传递数据
+     - **线程安全**，`LiveData`的`postValue`虽然也可在异步使用，但会导致数据丢失。
+
+​		==总的来说，对比``LiveData``，``StateFlow``的功能除了不支持``Lifecycle``其他的要更强大==
 
 
+
+
+4. SharedFlow:	``SharedFlow``与``StateFlow``用法比较类似，都允许多个消费者，都有只读和可变类型。不同的是，``SharedFlow``**没有默认值**。而且支持``缓存``，以及``背压策略``
+
+   ``````kotlin
+   //创建一个sharedFlow
+   val sharedFlow = MutableSharedFlow<Int>(0, 0, BufferOverflow.SUSPEND)
+   ``````
+   
+   ``MutableSharedFlow``的构造器有三个参数：
+   
+   - replay: 历史缓存，每次新的观察者观察时，先将历史缓存中的数据都吐出来
+   
+   - extraBufferCapacity: 除历史缓存之外的缓存区域。
+   
+   - onBufferOverflow: 背压策略 **(缓存区域大小 = replay + extraBufferCapacity)**
+   
+     - BufferOverflow.SUSPEND ： 超过就挂起，默认实现
+   
+     - BufferOverflow.DROP_OLDEST : 丢弃最老的数据
+   
+     - BufferOverflow.DROP_LATEST : 丢弃最新的数据
+   
+       
+   
+   
+   ``MutableSharedFlow``提供了一个``tryEmit``方法用来发射数据，``tryEmit``是非挂起的，在BufferOverflow.SUSPEND背压策略中，效果和``emit``方法有所不同：      ==根据不同策略选择不同方法使用==
+   
+   - BufferOverflow.SUSPEND: 当使用默认策略，``emit``发射数据时，如果缓存区域已经满了，会挂起并等待缓存区域空闲或者直接被观察者消费；而``tryEmit``是非挂起的，会直接返回``false``
+   
+     ```kotlin
+     val mutableSharedFlow = MutableSharedFlow<Int>(0, 3, BufferOverflow.SUSPEND)
+     GlobalScope.launch(NamedDispatcher("main")) {
+         launch {
+             mutableSharedFlow.collect{
+                 delay(10)
+                 println(it)
+             }
+         }
+         launch {
+             mutableSharedFlow.emit(1)
+     				mutableSharedFlow.emit(2)
+     				mutableSharedFlow.emit(3)
+     				mutableSharedFlow.emit(4)
+     				delay(100)
+     				println("----------------------")
+     				mutableSharedFlow.tryEmit(1)
+     				mutableSharedFlow.tryEmit(2)
+     				mutableSharedFlow.tryEmit(3)
+     				mutableSharedFlow.tryEmit(4)
+         }
+     }
+     ```
+   
+     输出日志:
+   
+     ```shell
+     1
+     2
+     3
+     4
+     ----------------------
+     1
+     2
+     3
+     ```
+
+   
 
 
 
