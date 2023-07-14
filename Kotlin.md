@@ -2,33 +2,34 @@
 
 ## 目录
 
--   [一、for循环](#一for循环)
--   [二、标准函数](#二标准函数)
-    -   [1、let()](#1let)
-    -   [2、with()](#2with)
-    -   [3、run()](#3run)
-    -   [4、apply()](#4apply)
--   [三、高阶函数](#三高阶函数)
-    -   [1、语法结构](#1语法结构)
--   [四、委托](#四委托)
-    -   [1、类委托](#1类委托)
-    -   [2、属性委托](#2属性委托)
-    -   [3、自定义lazy函数](#3自定义lazy函数)
--   [五、infix函数](#五infix函数)
-    -   [1、语法](#1语法)
-    -   [2、例子](#2例子)
--   [六、泛型的高级特性](#六泛型的高级特性)
-    -   [1、对泛型进行实例化](#1对泛型进行实例化)
-    -   [2、泛型的协变](#2泛型的协变)
--   [七、协程](#七协程)
-    -   [1、协程创建——作用域构建器](#1协程创建——作用域构建器)
-    -   [2、Flow](#2Flow)
-       -   [(1)、Flow的介绍](#1Flow的介绍)
-       -   [(2)、Flow的使用](#2Flow的使用)
-       -   [(3)、StateFlow和SharedFlow](#3StateFlow和SharedFlow)
+-   [1. for循环](#for循环)
+-   [2. 标准函数](#标准函数)
+    -   [1.1. let()](#1. let)
+    -   [1.2. with()](#2. with)
+    -   [1.3. run()](#3. run)
+    -   [1.4. apply()](#4. apply)
+-   [3. 高阶函数](#高阶函数)
+    -   [3.1. 语法结构](#1. 语法结构)
+-   [4. 委托](#委托)
+    -   [4.1. 类委托](#1. 类委托)
+    -   [4.2. 属性委托](#2. 属性委托)
+    -   [4.3. 自定义lazy函数](#3. 自定义lazy函数)
+-   [5. infix函数](#infix函数)
+    -   [5.1. 语法](#1. 语法)
+    -   [5.2. 例子](#2. 例子)
+-   [6. 泛型的高级特性](#泛型的高级特性)
+    -   [6.1. 对泛型进行实例化](#1. 对泛型进行实例化)
+    -   [6.2. 泛型的协变](#2. 泛型的协变)
+-   [7. 协程](#协程)
+    -   [7.1. 协程创建——作用域构建器](#1. 协程创建——作用域构建器)
+    -   [7.2. Flow](#2. Flow)
+       -   [7.2.1. Flow的介绍](#2.1. Flow的介绍)
+       -   [7.2.2. Flow的使用](#2.2. Flow的使用)
+       -   [7.2.3. StateFlow和SharedFlow](#2.3. StateFlow和SharedFlow)
 
 
-# 一、for循环
+
+# for循环
 
 -   使用for in关键字
     ```kotlin
@@ -43,9 +44,11 @@
     }
     ```
 
-# 二、标准函数
 
-## 1、let()
+
+# 标准函数
+
+## 1. let()
 
 ```kotlin
 val testString = "123"
@@ -55,7 +58,7 @@ testString?.let {
 }
 ```
 
-## 2、with()
+## 2. with()
 
 > 传入对象，在块内连续调用该对象的方法，让代码变得更加整洁
 
@@ -71,7 +74,7 @@ val num = with(StringBuilder()) {
 println(num)
 ```
 
-## 3、run()
+## 3. run()
 
 > 功能与with()函数相同
 
@@ -87,7 +90,7 @@ val num = StringBuilder().run {
 println(num)
 ```
 
-## 4、apply()
+## 4. apply()
 
 > 用法与run()函数基本一致，区别在于最后一行不是返回值，返回值为对象本身
 
@@ -101,11 +104,13 @@ val num: StringBuilder = StringBuilder().apply {
 println(num.toString())
 ```
 
-# 三、高阶函数
+
+
+# 高阶函数
 
 > 一个函数接受另一个函数作为参数，获取返回值类型是另一个函数
 
-## 1、语法结构
+## 1. 语法结构
 
 ClassName.(String, Int) → Uint
 
@@ -115,11 +120,13 @@ fun example(func: (String, Int) -> Unit) {
 }
 ```
 
-# 四、委托
+
+
+# 委托
 
 > 操作对象不会自己不会去处理某段逻辑，而是会把工作委托给另一个辅助对象去处理
 
-## 1、类委托
+## 1. 类委托
 
 > 将一个类的具体实现委托给另一个类去完成
 
@@ -132,7 +139,7 @@ class MySet<T>(private val helperSet: HashSet<T>) : Set<T> by helperSet {
 }
 ```
 
-## 2、属性委托
+## 2. 属性委托
 
 > 将一个属性的具体实现委托给另一个类去完成
 
@@ -154,7 +161,7 @@ class Delegate {
 
 ```
 
-## 3、自定义lazy函数
+## 3. 自定义lazy函数
 
 ```kotlin
 class Later<T>(val block: (T) -> T) {
@@ -188,13 +195,15 @@ fun main() {
 }
 ```
 
-# 五、infix函数
 
-## 1、语法
+
+# infix函数
+
+## 1. 语法
 
 infix 函数不能定义成顶层函数，它必须是某个类的成员函数，可以使用拓展函数的方式将它定义到某个类中；其次，infix函数必须且只能接收一个参数，这个参数的类型是没有限制的
 
-## 2、例子
+## 2. 例子
 
 ```kotlin
 fun main() {
@@ -209,9 +218,11 @@ class Person(private var name: String, private var age: Int) {
 }
 ```
 
-# 六、泛型的高级特性
 
-## 1、对泛型进行实例化
+
+# 泛型的高级特性
+
+## 1. 对泛型进行实例化
 
 > 可以将内联函数中的泛型进行实例化(使用inline关键字)；在声明泛型的地方必须加上reified关键字来表示泛型要进行实例化
 
@@ -225,7 +236,7 @@ fun main() {
 inline fun <reified T> getGenericType() =T::class.java
 ```
 
-## 2、泛型的协变
+## 2. 泛型的协变
 
 > 假如定义了一个MyClass\<T>的泛型类，其中A是B的子类型，同时MyClass\<A>是MyClass\<B>的子类型，那么可以称MyClass在T这个泛型上是协变的
 
@@ -254,11 +265,13 @@ class Student : Person() {
 }
 ```
 
-# 七、协程
+
+
+# 协程
 
 > 在编程语音层面实现并发编程，不依赖于操作系统调度
 
-## 1、协程创建——作用域构建器
+## 1. 协程创建——作用域构建器
 
 1.  GlogalScope.launch——创建一个顶层协层作用域
 2.  runBlocking——创建一个协层作用域，但是会阻塞当前线程，会影响性能
@@ -267,15 +280,13 @@ class Student : Person() {
 
 
 
-## 2、Flow
+## 2. Flow
 
- ### 1)、Flow的介绍
+ ### 2.1. Flow的介绍
 
 ​	Flow 是 google 官方提供的一套基于 kotlin 协程的响应式编程模型，它与 RxJava 的使用类似，但相比之下 Flow 使用起来更简单，另外 Flow 作用在协程内，可以与协程的生命周期绑定，当协程取消时， Flow 也会被取消，避免了内存泄漏风险。
 
-
-
- ### 2)、Flow的使用
+ ### 2.2. Flow的使用
 
 1. Flow的创建
 
@@ -295,9 +306,6 @@ class Student : Person() {
    val flow = listOf(1,2,3,4)
    	.asFlow()
    ```
-
-   
-
 
 
   2. Flow的调用
@@ -320,9 +328,6 @@ class Student : Person() {
        println(it.toString)
      }
      ```
-
-     
-
 
 
 3. Flow的常用操作符
@@ -550,9 +555,7 @@ class Student : Person() {
    
      ![image-20230601183947155](./img/image-20230601183947155.png)
 
-
-
-### 3)、StateFlow和SharedFlow
+### 2.3. StateFlow和SharedFlow
 
 > 在说`StateFlow`和`SharedFlow`之前，我要说一下冷和热的概念。
 >
