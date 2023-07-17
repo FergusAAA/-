@@ -69,11 +69,57 @@ git init targetFile
    git commit
    #设置默认编辑软件
    git config --global core.editor vim
+   #把所有已经跟踪过的文件暂存起来一并提交，从而跳过 git add 步骤
+   git commit -a
    ```
 
+- rm 命令: 将改动从暂存区移除
 
+  ```shell
+  #当文件已被删除，不希望继续被跟踪
+  git rm
+  #当强制将文件从暂存区移除，并删除该文件
+  git rm -f
+  #将文件从暂存区移除，放到未暂存区域
+  git rm --cached
+  ```
 
+- mv 命令: 移动或重命名文件
 
+  ```shell
+  git mv xxx.xxx xxx
+  ```
+
+- log 命令: 查看提交历史
+
+  ```shell
+  #默认不用任何参数的话，git log 会按提交时间列出所有的更新，最近的更新排在最上面
+  git log
+  #显示每次提交的内容差异
+  git log -p
+  #显示最近*(数字1/2/3/4/5/6……)次提交
+  git log -2
+  #显示简略的统计信息
+  git log --stat
+  #仅在提交信息后显示已修改的文件清单
+  --name-only
+  #显示新增、修改、删除的文件清单
+  --name-status
+  #使用较短的相对时间显示（比如，“2 weeks ago”)
+  --relative-date
+  #按照时间限制
+  --since 和 --until
+  #按照作者搜索
+  --author
+  #按照commit提交关键字
+  --grep
+  #按照修改中的字符串或函数引用
+  -S function_name
+  #按照路径搜索(使用--分隔其他选项，放最后)
+  git log --author xxx -- (路径)
+  ```
+
+  
 
 
 
