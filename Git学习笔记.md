@@ -121,7 +121,7 @@ git init targetFile
   git log --author xxx -- (路径)
   ```
 
-## 4.Git 撤销操作
+## 4. Git 撤销操作
 
 - git commit --amend: 提交完了才发现漏掉了几个文件没有添加，或者提交信息写错了
   例如，我提交完成后，发现少提交一个``A文件``,则可以
