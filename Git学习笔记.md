@@ -3,6 +3,8 @@
 	- [1.1. 配置信息](#1-配置信息)
 	- [1.2. 建立工作区](#2-建立工作区)
 	- [1.3. Git 提交](#3-git-提交)
+	- [1.4. Git 撤销操作](#4-git-撤销操作)
+- [2. Git 远程仓库](#git-远程仓库)
 
 # Git 基础命令
 ## 1. 配置信息
@@ -119,9 +121,43 @@ git init targetFile
   git log --author xxx -- (路径)
   ```
 
-  
+## 4.Git 撤销操作
+
+- git commit --amend: 提交完了才发现漏掉了几个文件没有添加，或者提交信息写错了
+  例如，我提交完成后，发现少提交一个``A文件``,则可以
+
+  ```shell
+  #将 A文件 加入暂存区
+  git add A
+  #输入提交信息重新提交
+  git commit --amend
+  ```
+
+- 取消暂存: git restore --staged <file>
+
+  ```shell
+  #创建两个文件
+  touch 1.log
+  touch 2.log
+  #全部加入暂存区
+  git add *
+  #将2.log取消暂存
+  git restore --staged 2.log
+  ```
+
+- 取消未暂存区的修改：git restore <file>
+
+  ```shell
+  #修改某个文件
+  vi 1.log
+  #取消文件修改
+  git restore 1.log
+  ```
 
 
+
+
+# Git 远程仓库
 
 
 
