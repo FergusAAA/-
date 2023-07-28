@@ -1,13 +1,20 @@
 # 目录
-- [1. Git 基础命令](#git-基础命令)
-	- [1.1. 配置信息](#1-配置信息)
-	- [1.2. 建立工作区](#2-建立工作区)
-	- [1.3. Git 提交](#3-git-提交)
-	- [1.4. Git 撤销操作](#4-git-撤销操作)
-- [2. Git 远程仓库](#git-远程仓库)
+- [1. Git 基础](#git-基础)
+	- [1.1. Git 初始化](#git-初始化)
+		- [1.1.1. 配置信息](#1-配置信息)
+		- [1.1.2. 建立工作区](#2-建立工作区)
+	- [1.2. Git 提交](#git-提交)
+	- [1.3. Git 撤销操作](#git-撤销操作)	
+	- [1.4. Git 远程仓库](#git-远程仓库)
+	- [1.5. Git 标签](#git-标签)
 
-# Git 基础命令
-## 1. 配置信息
+
+
+# Git 基础
+
+## Git 初始化
+
+### 1. 配置信息
 - 配置全局用户信息
 	```shell
 	git config --global user.name "XXX"
@@ -30,7 +37,7 @@
 	git config -l
 	```
 
-## 2. 建立工作区
+### 2. 建立工作区
 ```shell
 #在当前所在的目录下创建工作区
 git init
@@ -38,7 +45,7 @@ git init
 git init targetFile
 ```
 
-## 3. Git 提交
+## Git 提交
 - status 命令: 查看当前工作区修改状态
 	 ```shell
 	git status
@@ -121,7 +128,7 @@ git init targetFile
   git log --author xxx -- (路径)
   ```
 
-## 4.Git 撤销操作
+## Git 撤销操作
 
 - git commit --amend: 提交完了才发现漏掉了几个文件没有添加，或者提交信息写错了
   例如，我提交完成后，发现少提交一个``A文件``,则可以
@@ -155,13 +162,83 @@ git init targetFile
   ```
 
 
+## Git 远程仓库
 
+### 1. 查看远程仓库
 
-# Git 远程仓库
+- git remote: 列出已配置的远程服务器的简写
 
+  ```shell
+  🕙15:48:34 ❯ git remote
+  origin
+  ```
 
+- git remote -v : 列出已配置的远程服务器的简写，以及对应的URL
 
+  ```shell
+  🕙15:48:36 ❯ git remote -v                                           
+  origin	git@github.com:FergusAAA/Notes.git (fetch)
+  origin	git@github.com:FergusAAA/Notes.git (push)
+  ```
 
+- git remote show [remote-name] : 查看指定远程服务器的详细信息
 
+  ```shell
+  🕙17:53:39 ❯ git remote show github
+  * remote github
+    Fetch URL: git@github.com:FergusAAA/Notes.git
+    Push  URL: git@github.com:FergusAAA/Notes.git
+    HEAD branch: master
+    Remote branch:
+      master tracked
+    Local ref configured for 'git push':
+      master pushes to master (local out of date)
+  ```
 
+### 2. 添加远程仓库及数据同步
 
+- git remote add <shortname> <url> : 添加一个新的远程 Git 仓库，同时指定一个简写
+
+  ```shell
+  111 on master 
+  🕙16:00:57 ❯ git remote   
+  
+  111 on master 
+  🕙16:00:59 ❯ git remote add github git@github.com:FergusAAA/Notes.git
+  
+  111 on master 
+  🕙16:08:36 ❯ git remote                                              
+  github
+  
+  111 on master 
+  🕙16:08:40 ❯ git remote -v                                           
+  github	git@github.com:FergusAAA/Notes.git (fetch)
+  github	git@github.com:FergusAAA/Notes.git (push)
+  ```
+
+- git fetch [remote-name] : 更新所有远程分支的引用
+
+- git pull : 服务器上抓取数据并自动尝试合并到当前所在的分支
+
+- git push [remote-name] [branch-name] : 推送到指定服务器的指定分支上
+
+### 3. 远程仓库的其他操作
+
+- git remote rename <old> <new> : 远程仓库的简写重命名
+
+  ```shell
+  111 on  master took 5s 
+  🕙17:53:56 ❯ git remote            
+  github
+  
+  111 on  master 
+  🕙18:04:14 ❯ git remote rename github gh
+  
+  111 on  master 
+  🕙18:04:23 ❯ git remote                 
+  gh
+  ```
+
+- git remote rm <name> : 移除远程仓库
+
+## Git 标签
