@@ -7,6 +7,7 @@
 	- [1.3. Git 撤销操作](#git-撤销操作)	
 	- [1.4. Git 远程仓库](#git-远程仓库)
 	- [1.5. Git 标签](#git-标签)
+- [2. Git 分支](#git-分支)
 
 
 
@@ -128,8 +129,7 @@ git init targetFile
   git log --author xxx -- (路径)
   ```
 
-## Git 撤销操作
-
+## 4. Git 撤销操作
 - git commit --amend: 提交完了才发现漏掉了几个文件没有添加，或者提交信息写错了
   例如，我提交完成后，发现少提交一个``A文件``,则可以
 
@@ -242,3 +242,25 @@ git init targetFile
 - git remote rm <name> : 移除远程仓库
 
 ## Git 标签
+
+## 1. 展示标签
+
+- git tag : 已字母顺序列出标签
+
+- git show <tag> : 展示标签信息与对应的提交信息
+
+## 2. 创建标签
+
+- git tag <tagName> [SHA] : 创建轻量标签
+- git tag - a <tagName> [-m] [msg] [SHA] : 创建附注标签
+
+## 3. 共享标签
+
+- git push <remote> <tagName> : 将指定标签推送到远程指定仓库
+- git push <remote> --tags : 将所有tag都推送都远程仓库
+
+
+
+# Git 分支
+
+  
