@@ -241,6 +241,8 @@ git init targetFile
 
 - git remote rm <name> : 移除远程仓库
 
+
+
 ## Git 标签
 
 ## 1. 展示标签
@@ -263,4 +265,88 @@ git init targetFile
 
 # Git 分支
 
-  
+## 1. Git 分支简介
+
+> 实际上是一个指向提交对象的指针
+
+### 1. Git 分支的创建
+
+> 创建分支，实际就是在当前提交对象上创建一个指针
+
+- git branch <branchName> : 基于当前提交创建分支
+
+### 2. Git 分支切换
+
+- git checkout <branchName> : ``切换``到指定分支
+- git checkout -b <branchName> : ``新建`` 并 ``切换``到指定分支，是 git branch <branchName> 和 git checkout <branchName> 的简写
+
+
+
+## 2. Git 分支合并与删除
+
+- git merge <branchName> : 如果当前分支在指定分支的上游，那么只会移动指针，将指针指向目标分支所在的提交；如果两个分支分叉开，那么 git 就会自动选择一个祖先提交作为基础，创建一次三方合并
+
+  ![image-20230807192945155](./img/image-20230807192945155.png)
+
+- git branch -d <branchName> : 删除指定分支
+
+- git branch -D <branchName> : 强制删除指定分支，因为分支如果包含未合并到当前分支的提交，删除会失败，所以需要强制删除
+
+
+
+## 3. Git 冲突合并
+
+> 当两个提交修改了同一个文件位置，git 无法快速合并时，冲突就发生了，此时需要手动合并冲突
+
+```shell
+#合并产生冲突
+111 on  master 
+🕙19:40:27 ❯ git merge test  
+Auto-merging xxx.xxx
+CONFLICT (content): Merge conflict in xxx.xxx
+Automatic merge failed; fix conflicts and then commit the result.
+#查看冲突文件
+111 on  master (MERGING) [=] 
+🕙19:40:38 [🔴 ERROR] ❯ git status    
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+	both modified:   xxx.xxx
+
+no changes added to commit (use "git add" and/or "git commit -a")
+#手动合并
+111 on  master (MERGING) [=] 
+🕙19:40:47 ❯ vi xxx.xxx
+#提交合并改动
+111 on  master (MERGING) [=] 
+🕙19:42:31 ❯ git add xxx.xxx 
+
+111 on  master (MERGING) [+] 
+🕙19:42:43 ❯ git status     
+On branch master
+All conflicts fixed but you are still merging.
+  (use "git commit" to conclude merge)
+
+Changes to be committed:
+	modified:   xxx.xxx
+
+
+111 on  master (MERGING) [+] 
+🕙19:42:46 ❯ git commit -m "git merge"     
+[master c3cf240] git merge
+```
+
+
+
+## 4. Git 分支管理
+
+### 1. 分支查看
+
+- git branch : 当前所有分支的列表
+- git branch -v : 查看每个分支最后一次提交
+- git branch --merged : 当前已经合并到当前分支的分支
+- git branch --no-merged : 当前尚未合并到当前分支的分支
