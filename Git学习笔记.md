@@ -347,6 +347,48 @@ Changes to be committed:
 ### 1. 分支查看
 
 - git branch : 当前所有分支的列表
+
 - git branch -v : 查看每个分支最后一次提交
+
+- git branch -vv : 查看每个本地分支，且包含更多的信息，如每一个分支正在跟踪哪个远程分支与本地分支是否是领先、落后或是都有
+
+  ```shell
+  #如果想统计最新的领先或者落后信息
+  git fetch remote
+  git branch -vv
+  ```
+
 - git branch --merged : 当前已经合并到当前分支的分支
+
 - git branch --no-merged : 当前尚未合并到当前分支的分支
+
+
+
+## 5. Git 远程分支
+
+### 1. 分支跟踪
+
+- git checkout -b <branch> <remotenameBranch> : 基于远程分支``新建`` 并 ``切换``到指定分支
+
+### 2. 拉取
+
+- git fetch <remoteName> : 拉取指定的仓库，更新远程仓库的引用，但不会更新到本地分支
+
+- git merge <remoteBranch> : 将远程分支的改动合入本地分支
+
+- git pull <remoteName> <remoteBranch>:<branch> :  实际是将 ``git fetch`` 和 ``git merge`` 两个命令合并使用
+
+### 3. 删除远程分支
+
+- git push origin --delete <branchName> : 删除远程分支
+
+
+
+## 6. 变基
+
+- git rebase <branchName> : 将与 ``最近同祖 `` 的差异提交，全部移动到目标分支最后一次提交之后
+
+- git rebase --onto <tarBranch> <skipBranch> <sourceBranch> : 取出 ``sourceBranch分支``，找出处于 ``sourceBranch分支``和 `` skipBranch分支``的共同祖先之后的修改，然后把它们在  ``tarBranch 分支`` 上重放一遍
+
+  <img src="./img/image-20230831171205316.png" alt="image-20230831171205316" style="zoom: 67%;" />
+
