@@ -5,6 +5,7 @@
 		- [1.1.2. 建立工作区](#2-建立工作区)
 	- [1.2. Git 提交](#git-提交)
 	- [1.3. Git 撤销操作](#git-撤销操作)	
+	- [1.4. Git 清理](#git-清理)
 	- [1.4. Git 远程仓库](#git-远程仓库)
 	- [1.5. Git 标签](#git-标签)
 - [2. Git 分支](#git-分支)
@@ -141,7 +142,7 @@ git init targetFile
   git log --author xxx -- (路径)
   ```
 
-## 4. Git 撤销操作
+## Git 撤销操作
 - git commit --amend: 提交完了才发现漏掉了几个文件没有添加，或者提交信息写错了
   例如，我提交完成后，发现少提交一个``A文件``,则可以
 
@@ -171,6 +172,26 @@ git init targetFile
   vi 1.log
   #取消文件修改
   git restore 1.log
+  ```
+
+## Git 清理
+  <font color=#C7254E>``git clean``</font> 命令用来从你的工作目录中删除所有没有tracked过的文件。
+  | 命令    				         | 说明                                                          |
+  |----------------------------------------------|--------------------------------------------------------------|
+  | <font color=#C7254E>``git clean -n``</font>  | 告诉你哪些文件会被删除. 记住他不会真正的删除文件, 只是一个提醒。          |
+  | <font color=#C7254E>``git clean -d``</font>  | 删除未跟踪的目录                   |
+  | <font color=#C7254E>``git clean -f``</font>  | 删除当前目录下所有没有track过的文件。忽略文件不被删除！                               |
+  | <font color=#C7254E>``git clean -df``</font> | -d代表删除目录，-f强制删除。                                                          |
+  | <font color=#C7254E>``git clean -xf``</font> | 删除当前目录下所有没有track过的文件. 不管他是否是.gitignore文件里面指定的文件夹和文件 |
+  | <font color=#C7254E>``git clean -X``</font>  | 删除所有被忽略的文件                                                                  |
+
+  ```shell
+#让当前工作目录回滚到上一次提交的状况，新添加的文件也被删除掉。
+
+# 让暂存区和工作目录把已经被跟踪的文件清理干净
+  $ git reset --hard
+# 让未追踪的文件进行清理
+  $ git clean -f
   ```
 
 
