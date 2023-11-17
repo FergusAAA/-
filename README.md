@@ -4,5 +4,5 @@
 - [Android](./Androi.md)
 - [Kotlin](./Kotlin.md)
   - [Flow](./Kotlin.md#2-Flow) 
-- [Git](./Git学习笔记.md)
+- [Git](https://git-scm.com/book/zh/v2)
 - [adb](adb命令.md)
